@@ -20,7 +20,6 @@ export async function Navbar() {
             Blog <span className="text-blue-500">Juswa</span>{" "}
           </h1>
         </Link>
-
         <div className="hidden sm:flex items-center gap-6">
           <Link
             className="text-sm font-medium hover:text-blue-500 transition-colors"
