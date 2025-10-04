@@ -9,7 +9,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
-async function getData(id) {
+async function getData(id: string) {
   const data = await prisma.blogPost.findUnique({
     where: {
       id: id,
@@ -75,4 +75,3 @@ export default async function IdPage({ params }: { params: Params }) {
     </div>
   );
 }
- 
