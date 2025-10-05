@@ -91,3 +91,28 @@ export async function updatePost(
     };
   }
 }
+
+export async function deletedPost(id: string) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) return redirect("/api/auth/register");
+
+  try {
+    const deletedPost = await prisma.blogPost.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    revalidatePath("/");
+
+    return {
+      success: true,
+      message: "Successfully deleted a post",
+      post: deletedPost,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}

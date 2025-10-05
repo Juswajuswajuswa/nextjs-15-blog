@@ -1,13 +1,11 @@
 import { prisma } from "@/app/utils/db";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Param } from "@prisma/client/runtime/library";
 import Image from "next/image";
 import Link from "next/link";
-
 import { notFound } from "next/navigation";
 import React from "react";
+import DeletePostBtn from "../_components/DeletePostBtn";
+import { buttonVariants } from "@/components/ui/button";
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -72,8 +70,11 @@ export default async function IdPage({ params }: { params: Params }) {
               }).format(data.createdAt)}
             </p>
           </div>
-          <div>
-            <Link href={`/edit/${id}`} className={buttonVariants()}>Edit post</Link>
+          <div className="flex gap-4">
+            <Link href={`/edit/${id}`} className={buttonVariants()}>
+              Edit post
+            </Link>
+            <DeletePostBtn id={id} />
           </div>
         </div>
       </div>
