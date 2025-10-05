@@ -15,11 +15,11 @@ export function Navbar() {
   const user = getUser();
 
   return (
-    <nav className="py-5 flex  justify-between">
+    <nav className="py-5 flex items-center  justify-between">
       <div className="flex items-center gap-6">
         <Link href={"/"}>
-          <h1 className="text-3xl font-semibold">
-            Blog <span className="text-blue-500">Juswa</span>{" "}
+          <h1 className="text-2xl font-semibold">
+          <span className="bg-black text-white p-1 rounded-sm">CRUD</span> Juswa 
           </h1>
         </Link>
         <div className="hidden sm:flex items-center gap-6">

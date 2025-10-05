@@ -47,10 +47,14 @@ export default function BlogSearchInput({ userId }: { userId: string }) {
         className="border w-[300px]   border-black"
       />
 
-      <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {results.map((item) => (
-          <BlogPostCard key={item.id} data={item} />
-        ))}
+      <div className="grid w-full relative  h-fullgrid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {results && results.length > 0 ? (
+          results.map((item) => <BlogPostCard key={item.id} data={item} />)
+        ) : (
+          <div className=" flex justify-center w-full  ">
+            <p>No blog found</p>
+          </div>
+        )}
       </div>
 
       {/* 📄 Pagination Controls */}
