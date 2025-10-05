@@ -3,6 +3,8 @@ import { prisma } from "./utils/db";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const revalidate = 60
+
 async function getData() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   const data = await prisma.blogPost.findMany({
@@ -38,7 +40,7 @@ async function BlogPost() {
   const data = await getData();
 
   return (
-    <div className="gird gird-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {data.map((item) => (
         <BlogPostCard key={item.id} data={item} />
       ))}

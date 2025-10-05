@@ -1,22 +1,9 @@
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
-import { prisma } from "../utils/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import BlogPostCard from "@/components/general/BlogPostCard";
-
-async function getData(userId: string) {
-  const data = await prisma.blogPost.findMany({
-    where: {
-      authorId: userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return data;
-}
+import { getData } from "../actions";
 
 export default async function DashboardRoute() {
   const { getUser } = getKindeServerSession();

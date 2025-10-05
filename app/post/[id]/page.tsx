@@ -1,5 +1,5 @@
 import { prisma } from "@/app/utils/db";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Param } from "@prisma/client/runtime/library";
@@ -8,6 +8,21 @@ import Link from "next/link";
 
 import { notFound } from "next/navigation";
 import React from "react";
+
+export const dynamicParams = true;
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    select: {
+      id: true,
+    },
+  });
+
+  return posts.map((post) => ({
+    id: post.id,
+  }));
+}
 
 async function getData(id: string) {
   const data = await prisma.blogPost.findUnique({
@@ -35,26 +50,31 @@ export default async function IdPage({ params }: { params: Params }) {
 
       <div className="mb-8 mt-6">
         <h1 className="text-3xl font-bold tracking-tight mb-4">{data.title}</h1>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className="relative size-10 overflow-hidden rounded-full">
-              <Image
-                src={data.authorImage}
-                alt={data.authorName}
-                fill
-                className="object-cover"
-              />
-            </div>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-4 borde">
+            <div className="flex items-center space-x-2">
+              <div className="relative size-10 overflow-hidden rounded-full">
+                <Image
+                  src={data.authorImage}
+                  alt={data.authorName}
+                  fill
+                  className="object-cover"
+                />
+              </div>
 
-            <p className="font-medium">{data.authorName}</p>
+              <p className="font-medium">{data.authorName}</p>
+            </div>
+            <p className="text-sm text-gray-500">
+              {new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(data.createdAt)}
+            </p>
           </div>
-          <p className="text-sm text-gray-500">
-            {new Intl.DateTimeFormat("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(data.createdAt)}
-          </p>
+          <div>
+            <Link href={`/edit/${id}`} className={buttonVariants()}>Edit post</Link>
+          </div>
         </div>
       </div>
 
