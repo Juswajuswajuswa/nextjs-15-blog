@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 import { blogSchema } from "./utils/zodSchema";
+import { pages } from "next/dist/build/templates/app-page";
 
 export async function handleSubmission(values: z.infer<typeof blogSchema>) {
   const { getUser } = getKindeServerSession();
@@ -44,17 +45,46 @@ export async function handleSubmission(values: z.infer<typeof blogSchema>) {
   };
 }
 
-export async function getData(userId: string) {
-  const data = await prisma.blogPost.findMany({
-    where: {
-      authorId: userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+export async function getData(
+  userId: string,
+  query: string = "",
+  page: number = 1,
+  limit: number = 5
+) {
+  const skip = (page - 1) * limit;
 
-  return data;
+  const [blogs, total] = await Promise.all([
+    prisma.blogPost.findMany({
+      where: {
+        authorId: userId,
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.blogPost.count({
+      where: {
+        authorId: userId,
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+    }),
+  ]);
+
+  return {
+    data: blogs,
+    meta: {
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    },
+  };
 }
 
 export async function updatePost(
@@ -116,3 +146,38 @@ export async function deletedPost(id: string) {
     console.log(error);
   }
 }
+
+// export async function searchBlog(query: string, page: number = 1) {
+//   const take = 10;
+//   const skip = (page - 1) * take;
+
+//   const blogs = await prisma.blogPost.findMany({
+//     where: {
+//       title: {
+//         contains: query,
+//         mode: "insensitive",
+//       },
+//     },
+//     skip,
+//     take,
+//     orderBy: { createdAt: "desc" },
+//   });
+
+//   const total = await prisma.blogPost.count({
+//     where: {
+//       title: {
+//         contains: query,
+//         mode: "insensitive",
+//       },
+//     },
+//   });
+
+//   return {
+//     data: blogs,
+//     meta: {
+//       total,
+//       page,
+//       pages: Math.ceil(total / take),
+//     },
+//   };
+// }

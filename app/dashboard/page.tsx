@@ -4,14 +4,15 @@ import React from "react";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import BlogPostCard from "@/components/general/BlogPostCard";
 import { getData } from "../actions";
+import { Input } from "@/components/ui/input";
+import BlogSearchInput from "@/components/general/BlogSearch";
 
 export default async function DashboardRoute() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  const data = await getData(user?.id as string);
   return (
-    <div>
+    <div className="my-10 h-[750px]">
       <div className="flex items-center  justify-between mb-4">
         <h2 className="text-xl font-medium">Your Blog Articles</h2>
 
@@ -20,10 +21,8 @@ export default async function DashboardRoute() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {data.map((item) => (
-          <BlogPostCard key={item.id} data={item} />
-        ))}
+      <div className="h-full">
+        <BlogSearchInput userId={user?.id as string} />
       </div>
     </div>
   );
